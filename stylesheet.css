@@ -13,16 +13,25 @@ h2, h3, h4{
     text-align: center;
     padding-bottom: 10px;
 }
+strong{
+    color: #AB3334;
+}
 form {
     text-align: center;
 }
 input, select{
     margin-bottom: 10px;
 }
+input[type="text"]:focus,
+.uneditable-input:focus {   
+      border-color: #AB3334;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px #FFFFFF;
+      outline: 0 none;
+}
 .form-group{
     text-align: center;
 }
-#info, #course, #image{
+#info, #course, #image, #summary{
     /*display: none;*/
     background-color: #2C2C2C;
     color: #FFFFFF;
@@ -79,3 +88,25 @@ input, select{
     color: #2C2C2C;
     border-color: #2C2C2C;
 }
+
+/*CONFIRMATION PAGE*/
+#container{
+    position: relative;
+}
+div#studentInfo{
+   width: 50%;
+   padding: 0;
+     margin: 0;
+     position: fixed;     
+}
+div#courseSelection{
+    width: 50%;
+    float: right;
+}
+div#imageUpload{
+    clear: both;
+    width: 50%;
+    margin: 0 auto;
+}
+
+

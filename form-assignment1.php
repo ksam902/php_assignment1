@@ -44,7 +44,7 @@
             <div class="form-group">
               <div class="input-group" >
                 <div class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></div>
-                <input type="text" class="form-control" name="email" placeholder="DOB">
+                <input type="text" class="form-control" name="dob" placeholder="YYYY-MM-DD">
               </div>
             </div>
           </div>
