@@ -1,0 +1,81 @@
+body{
+    background-color: #AB3334 !important;
+    color: #2C2C2C;
+}
+div.jumbotron{
+    background-color: #2C2C2C;
+    color: #FFFFFF;
+}
+div.jumbotron small{
+    color: #D3D3D3;
+}
+h2, h3, h4{
+    text-align: center;
+    padding-bottom: 10px;
+}
+form {
+    text-align: center;
+}
+input, select{
+    margin-bottom: 10px;
+}
+.form-group{
+    text-align: center;
+}
+#info, #course, #image{
+    /*display: none;*/
+    background-color: #2C2C2C;
+    color: #FFFFFF;
+    border-radius: 15px;
+    width: 50%;
+    margin-top: 1%;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 20px;
+    height: auto;
+    min-width: 350px;
+    max-height: 1000px;
+    overflow-x: hidden;
+}
+#stage{
+    width:600px;
+    height:600px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    border-style:dotted;
+    border-width:1px;
+    border-radius: 15px;
+}
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+#submit{
+    margin: auto;
+    width: 50%;
+    min-width: 350px;
+    background-color: #2C2C2C;
+    color: #FFFFFF;
+    margin-top: 10px;
+    margin-bottom: 25px;
+}
+#submit:hover{
+    background-color: #AB3334;
+    color: #2C2C2C;
+    border-color: #2C2C2C;
+}
