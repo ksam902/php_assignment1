@@ -14,6 +14,10 @@ $course3 = "";
 $course4 = "";
 $emailAddress = "w0265131@nscc.ca";
 
+$courseArray = [];
+$file = "";
+$shortName = "";
+
 if (!empty($_POST)) {
     //handling text inputs
     if($_POST['fName'] !== " "){
@@ -33,6 +37,7 @@ if (!empty($_POST)) {
     if(isset($_POST['course1'])) 
     {
        $course1 = $_POST['course1'];
+       array_push($courseArray, $course1);
     }else{
         $course1 = "No Course Selected";
     }
@@ -40,6 +45,7 @@ if (!empty($_POST)) {
     if(isset($_POST['course2'])) 
     {
        $course2 = $_POST['course2'];
+       array_push($courseArray, $course2);
     }else{
         $course2 = "No Course Selected";
     }    
@@ -47,6 +53,7 @@ if (!empty($_POST)) {
     if(isset($_POST['course3'])) 
     {
        $course3 = $_POST['course3'];
+       array_push($courseArray, $course3);
     }else{
         $course3 = "No Course Selected";
     }
@@ -54,6 +61,7 @@ if (!empty($_POST)) {
     if(isset($_POST['course4'])) 
     {
        $course4 = $_POST['course4'];
+       array_push($courseArray, $course4);
     }else{
         $course4 = "No Course Selected";
     }
@@ -65,6 +73,71 @@ if (!empty($_POST)) {
                 move_uploaded_file($_FILES['imageToUpload']['tmp_name'], PATH_IMAGES. $_FILES['imageToUpload']['name']);               
             }
     }
+    //readCourse($courseArray);
+
+    writeToFiles($courseArray, $fName, $lName);
+}
+function readCourse(){
+    // $filename = "../../files/txt/$firstCourse";
+    // $whattoread = @fopen($filename, "r") or die("Couldn't open file");
+    // $file_contents = fread($whattoread, filesize($filename));
+    // $new_file_contents = nl2br($file_contents);
+    // $msgOne = "$new_file_contents";
+    // fclose($whattoread);    
+}
+function writeToFiles($courseArray, $fName, $lName){
+    $name = $fName." ".$lName[0].".";
+    $course = "";
+
+    foreach ($courseArray as $value) {
+        switch ($value) {
+            case "Accounting 11":
+                $course = $value;
+                echo $course . " ". $name;
+                break;
+            case "Biology 11":
+                $course = $value;
+                echo $course . " ". $name;
+                break;
+            case "Communications 12":
+                $course = $value;
+                echo $course . " ". $name;
+                break;
+            case "Digital Arts 11":
+                $course = $value;
+                echo $course . " ". $name;
+                break;
+            case "English 12":
+                $course = $value;
+                echo $course . " ". $name;
+                break;
+            case "French 11":
+                $course = $value;
+                echo $course . " ". $name;
+                break;
+            case "History 12":
+                $course = $value;
+                echo $course . " ". $name;
+                break;
+            case "Law 12":
+                $course = $value;
+                echo $course . " ". $name;
+                break;
+            case "Physical Education 10":
+                $course = $value;
+                echo $course . " ". $name;
+                break;
+            case "Robotics 11":
+                $course = $value;
+                echo $course . " ". $name;
+                break;                                               
+            default:
+                echo "You did not choose a course!";
+        }
+            $file = fopen("courses/$course", "a") or die("Unable to open file!");
+            fwrite($file, "\n".$name);
+            fclose($file);
+    }
 }
 function isAllowedUpload($mime) {   
     if (($mime == MIME_PNG) || ($mime == MIME_JPG)) {
@@ -72,6 +145,9 @@ function isAllowedUpload($mime) {
     } 
     return false;    
 }
+
+
+
     // $msg = "<html><body><table style='background: red; height: 800px; width: 800px;'><tr><td>";
     // $to = $emailAddress;
     // $subject = $fName . " " . $lName . "'s Survey Results";
