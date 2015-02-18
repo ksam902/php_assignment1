@@ -84,17 +84,16 @@ $emailAddress = "w0265131@nscc.ca";
             <p><strong>Student's Name : </strong><?php echo $fName . " " . $lName ?></p>
             <p><strong>Student's E-Mail Address : </strong><?php echo $email ?></p>
             <br/>
-            <strong>SUMMARY</strong>
-            <br/><br/>
+            <h5>SUMMARY</h5>
             <div id="studentInfo">
-                <strong>Student Info</strong><br/><br/>           
+                <h5>STUDENT INFO</h5>         
                 <p><strong>First Name :</strong> <?php echo $fName; ?>.</p>
                 <p><strong>Last Name :</strong> <?php echo $lName; ?>.</p>
                 <p><strong>Email :</strong> <?php echo $email; ?>.</p>
                 <p><strong>D.O.B. :</strong> <?php echo $dob; ?>.</p>
             </div>
             <div id="courseSelection">
-                <strong>Course Selection</strong><br/><br/> 
+                <h5>COURSE SELECTION</h5>
                 <p><strong>Course 1 :</strong> <?php echo $course1; ?>.</p>
                 <p><strong>Course 2 :</strong> <?php echo $course2; ?>.</p>
                 <p><strong>Course 3 :</strong> <?php echo $course3; ?>.</p>
