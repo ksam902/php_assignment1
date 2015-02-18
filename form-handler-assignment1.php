@@ -14,6 +14,7 @@ $course3 = "";
 $course4 = "";
 $emailAddress = "w0265131@nscc.ca";
 
+$coursesEnrolled = [];
 $courseArray = [];
 $file = "";
 $shortName = "";
@@ -73,17 +74,20 @@ if (!empty($_POST)) {
                 move_uploaded_file($_FILES['imageToUpload']['tmp_name'], PATH_IMAGES. $_FILES['imageToUpload']['name']);               
             }
     }
-    //readCourse($courseArray);
-
     writeToFiles($courseArray, $fName, $lName);
+    $coursesEnrolled = readCourses($courseArray, $coursesEnrolled);
 }
-function readCourse(){
-    // $filename = "../../files/txt/$firstCourse";
-    // $whattoread = @fopen($filename, "r") or die("Couldn't open file");
-    // $file_contents = fread($whattoread, filesize($filename));
-    // $new_file_contents = nl2br($file_contents);
-    // $msgOne = "$new_file_contents";
-    // fclose($whattoread);    
+function readCourses($courseArray, $courses){
+    foreach ($courseArray as $value) {
+        $filename = "courses/$value";
+        $whattoread = @fopen($filename, "r") or die("Couldn't open file");
+        $file_contents = fread($whattoread, filesize($filename));
+        $new_file_contents = nl2br($file_contents);
+        $msgOne = "$new_file_contents";
+        array_push($courses, $msgOne);  
+        fclose($whattoread);   
+    }  
+    return $courses;
 }
 function writeToFiles($courseArray, $fName, $lName){
     $name = $fName." ".$lName[0].".";
@@ -93,43 +97,43 @@ function writeToFiles($courseArray, $fName, $lName){
         switch ($value) {
             case "Accounting 11":
                 $course = $value;
-                echo $course . " ". $name;
+                //echo $course . " ". $name;
                 break;
             case "Biology 11":
                 $course = $value;
-                echo $course . " ". $name;
+                //echo $course . " ". $name;
                 break;
             case "Communications 12":
                 $course = $value;
-                echo $course . " ". $name;
+                //echo $course . " ". $name;
                 break;
             case "Digital Arts 11":
                 $course = $value;
-                echo $course . " ". $name;
+                //echo $course . " ". $name;
                 break;
             case "English 12":
                 $course = $value;
-                echo $course . " ". $name;
+                //echo $course . " ". $name;
                 break;
             case "French 11":
                 $course = $value;
-                echo $course . " ". $name;
+                //echo $course . " ". $name;
                 break;
             case "History 12":
                 $course = $value;
-                echo $course . " ". $name;
+                //echo $course . " ". $name;
                 break;
             case "Law 12":
                 $course = $value;
-                echo $course . " ". $name;
+                //echo $course . " ". $name;
                 break;
             case "Physical Education 10":
                 $course = $value;
-                echo $course . " ". $name;
+                //echo $course . " ". $name;
                 break;
             case "Robotics 11":
                 $course = $value;
-                echo $course . " ". $name;
+                //echo $course . " ". $name;
                 break;                                               
             default:
                 echo "You did not choose a course!";
@@ -145,9 +149,6 @@ function isAllowedUpload($mime) {
     } 
     return false;    
 }
-
-
-
     // $msg = "<html><body><table style='background: red; height: 800px; width: 800px;'><tr><td>";
     // $to = $emailAddress;
     // $subject = $fName . " " . $lName . "'s Survey Results";
@@ -202,5 +203,19 @@ function isAllowedUpload($mime) {
             </div>       
         </div>
     </div>
+    <?php
+        foreach ($coursesEnrolled as $value) {
+            echo    "<div class='container col-md-16 course'>
+                        <div id='container'>
+                            <div class='btnCourse'>
+                                <input type='submit' name='btnCourse' class='btn btn-default toggle-course' value='Toggle Course'>
+                            </div>
+                            <div class='course-content'> 
+                                $value
+                            </div>
+                        </div>
+                    </div>";    
+        }
+    ?>
 </body>
 </html>

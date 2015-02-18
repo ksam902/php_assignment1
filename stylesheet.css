@@ -34,7 +34,7 @@ input[type="text"]:focus,
 .form-group{
     text-align: center;
 }
-#info, #course, #image, #summary{
+#info, #course, #image, #summary, .course{
     /*display: none;*/
     background-color: #2C2C2C;
     color: #FFFFFF;
@@ -95,7 +95,7 @@ div#printButton{
     width: 100%;
     margin-top: 20px;
 }
-#btnPrint{
+#btnPrint, .toggle-course{
     margin: auto;
     width: 100%;
     min-width: 350px;
@@ -103,20 +103,26 @@ div#printButton{
     color: #FFFFFF;
     margin-top: 10px;
 }
-#btnPrint:hover{
+.toggle-course{
+    margin-bottom: 10px;
+}
+#btnPrint:hover, .toggle-course:hover{
     background-color: #2C2C2C;
     color: #AB3334;
     border-color: #AB3334;
+}
+.course-content{
+    display: none;
 }
 /*CONFIRMATION PAGE*/
 #container{
     position: relative;
 }
 div#studentInfo{
-   width: 50%;
-   padding: 0;
-     margin: 0;
-     position: fixed;     
+    width: 50%;
+    padding: 0;
+    margin: 0;
+    float: left;    
 }
 div#courseSelection{
     width: 50%;
