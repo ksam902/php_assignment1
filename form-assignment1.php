@@ -1,3 +1,16 @@
+<?php
+  $coursesArray = array('Accounting 11', 
+                        'Biology 11',
+                        'Communications 12',
+                        'Digital Arts 11',
+                        'English 12',
+                        'French 11',
+                        'History 12',
+                        'Law 12',
+                        'Physical Education 10',
+                        'Robotics 11',
+                  );
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +28,7 @@
         <h2>Tracker <small>: Student Courses</small></h2>
       </div>
     </div>
-      <form role="form" method="post" action="form-handler-assignment1.php">
+      <form role="form" method="post" action="form-handler-assignment1.php" enctype="multipart/form-data">
         <!-- STUDENT INFO -->
         <div id="info" class="container col-md-16">
           <h2>Student Info</h2>
@@ -55,8 +68,8 @@
             <select class="form-control" name="course1">
                 <option value="" selected disabled>Course 1</option>
                 <?php
-                    for($i=0; $i<=5; $i++){
-                        echo "<option value='" . $i . "'>" . $i . "</option>";
+                    foreach ($coursesArray as $value){
+                        echo "<option value='" . $value . "'>" . $value . "</option>";
                     }
                 ?>
             </select>
@@ -64,8 +77,8 @@
             <select class="form-control" name="course2">
                 <option value="" selected disabled>Course 2</option>
                 <?php
-                    for($i=0; $i<=5; $i++){
-                        echo "<option value='" . $i . "'>" . $i . "</option>";
+                    foreach ($coursesArray as $value){
+                        echo "<option value='" . $value . "'>" . $value . "</option>";
                     }
                 ?>
             </select>
@@ -73,8 +86,8 @@
             <select class="form-control" name="course3">
                 <option value="" selected disabled>Course 3</option>
                 <?php
-                    for($i=0; $i<=5; $i++){
-                        echo "<option value='" . $i . "'>" . $i . "</option>";
+                    foreach ($coursesArray as $value){
+                        echo "<option value='" . $value . "'>" . $value . "</option>";
                     }
                 ?>
             </select>
@@ -82,8 +95,8 @@
             <select class="form-control" name="course4">
                 <option value="" selected disabled>Course 4</option>
                 <?php
-                    for($i=0; $i<=5; $i++){
-                        echo "<option value='" . $i . "'>" . $i . "</option>";
+                    foreach ($coursesArray as $value){
+                        echo "<option value='" . $value . "'>" . $value . "</option>";
                     }
                 ?>
             </select>                                    
@@ -93,7 +106,7 @@
           <h2>Student Photo</h2>
               <!-- Image Upload --> 
             <div class="form-group">
-              <span class="btn btn-default btn-file"><span class="glyphicon glyphicon-picture"></span> Browse <input type="file"></span>
+              <span class="btn btn-default btn-file"><span class="glyphicon glyphicon-picture"></span> Browse <input type="file" id="imageToUpload" name="imageToUpload"></span>
             </div> 
           </div>          
           <input id="submit" type="submit" name="submit" class="btn btn-default" value="Submit">

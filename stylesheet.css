@@ -91,7 +91,23 @@ input[type="text"]:focus,
     color: #2C2C2C;
     border-color: #2C2C2C;
 }
-
+div#printButton{
+    width: 100%;
+    margin-top: 20px;
+}
+#btnPrint{
+    margin: auto;
+    width: 100%;
+    min-width: 350px;
+    background-color: #AB3334;
+    color: #FFFFFF;
+    margin-top: 10px;
+}
+#btnPrint:hover{
+    background-color: #2C2C2C;
+    color: #AB3334;
+    border-color: #AB3334;
+}
 /*CONFIRMATION PAGE*/
 #container{
     position: relative;

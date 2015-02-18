@@ -1,5 +1,8 @@
 <?php
-
+// define constants
+define('PATH_IMAGES', 'images/');
+define('MIME_PNG', 'image/png');
+define('MIME_JPG', 'image/jpeg');
 //form variables
 $fName = "";
 $lName = "";
@@ -11,7 +14,8 @@ $course3 = "";
 $course4 = "";
 $emailAddress = "w0265131@nscc.ca";
 
-//handling text inputs
+if (!empty($_POST)) {
+    //handling text inputs
     if($_POST['fName'] !== " "){
         $fName = $_POST['fName'];
     }
@@ -24,7 +28,7 @@ $emailAddress = "w0265131@nscc.ca";
     if($_POST['dob'] !== " "){
         $dob = $_POST['dob'];     
     }
-//handling form selects
+    //handling form selects
     //course 1 selection
     if(isset($_POST['course1'])) 
     {
@@ -53,7 +57,21 @@ $emailAddress = "w0265131@nscc.ca";
     }else{
         $course4 = "No Course Selected";
     }
-
+    if (is_uploaded_file($_FILES['imageToUpload']['tmp_name'])) {
+            $name = $_FILES['imageToUpload']['name'];
+            // get mime type
+            $mime = $_FILES['imageToUpload']['type'];
+            if (isAllowedUpload($mime)) {                
+                move_uploaded_file($_FILES['imageToUpload']['tmp_name'], PATH_IMAGES. $_FILES['imageToUpload']['name']);               
+            }
+    }
+}
+function isAllowedUpload($mime) {   
+    if (($mime == MIME_PNG) || ($mime == MIME_JPG)) {
+        return true;
+    } 
+    return false;    
+}
     // $msg = "<html><body><table style='background: red; height: 800px; width: 800px;'><tr><td>";
     // $to = $emailAddress;
     // $subject = $fName . " " . $lName . "'s Survey Results";
@@ -71,6 +89,7 @@ $emailAddress = "w0265131@nscc.ca";
     <link rel="stylesheet" href="stylesheet.css" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/Javascript" src="form.js"></script>    
 </head>
 <body>
     <div class="jumbotron">
@@ -101,7 +120,10 @@ $emailAddress = "w0265131@nscc.ca";
             </div>
             <div id="imageUpload">
                 <strong>Image Uploaded : </strong>
-            </div>   
+            </div>
+            <div id="printButton">
+                <input id="btnPrint" type="submit" name="submit" class="btn btn-default" value="Print">
+            </div>       
         </div>
     </div>
 </body>
