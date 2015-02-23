@@ -14,7 +14,6 @@ $course3 = "";
 $course4 = "";
 $image = "";
 $emailAddress = "w0265131@nscc.ca";
-$errorMessage = "";
 $fNameErr = $lNameErr = $emailErr = $dobErr = $course1Err = $course2Err = $course3Err = $course4Err = $imageErr="";
 
 //holds post values for courses
@@ -23,7 +22,7 @@ $courseArray = [];
 $file = "";
 $shortName = "";
 
-    //handling text inputs
+    //handling text inputs - if input is not empty, assign corresponding variable to it. If it is empty, provide error message
     if($_POST['fName'] !== ""){
         $fName = $_POST['fName'];
     }else{
@@ -40,6 +39,7 @@ $shortName = "";
         $emailErr = "Please Enter Your Email.";
     }
     if($_POST['dob'] !== ""){
+        //regular expression checking for date of birth YYYY-MM-DD format
         if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$_POST['dob'])){
             $dob = $_POST['dob']; 
         }else{
@@ -48,7 +48,7 @@ $shortName = "";
     }else{
         $dobErr = "Please Enter Your Date of Birth.";
     }
-    //handling form selects
+    //handling form selects - if selected push it to the course array
     //course 1 selection
     if(isset($_POST['course1'])) 
     {
@@ -81,10 +81,12 @@ $shortName = "";
     }else{
         $course4Err = "Please Choose a Course 4 Option.";
     }
+    //handle image upload
     if (is_uploaded_file($_FILES['imageToUpload']['tmp_name'])) {
             $name = $_FILES['imageToUpload']['name'];
             // get mime type
             $mime = $_FILES['imageToUpload']['type'];
+            //check if image file is of the right type
             if (isAllowedUpload($mime)) {                
                 move_uploaded_file($_FILES['imageToUpload']['tmp_name'], PATH_IMAGES. $_FILES['imageToUpload']['name']);               
             }else{
@@ -93,10 +95,12 @@ $shortName = "";
     }else{
         $name = "default.jpg";
     }
+    //check error variables, if one is not empty there is an error in the form and the user is redirected with the error message
     if ( $fNameErr !== "" || $lNameErr !== "" || $emailErr !== "" || $dobErr !== "" || $course1Err !== "" || $course2Err !== "" || $course3Err !== "" || $course4Err !== "" || $imageErr !== "") {
         header('Location: form-assignment1.php?firstNameError='.$fNameErr.'&lastNameError='.$lNameErr.'&emailError='.$emailErr.'&dobError='.$dobErr.'&course1Error='.$course1Err.'&course2Error='.$course2Err.'&course3Error='.$course3Err.'&course4Error='.$course4Err.'&imageError='.$imageErr.'');
         exit;
-    } 
+    }
+    //if we make it this far, write to files 
         writeToFiles($courseArray, $fName, $lName);
         $coursesEnrolled = readCourses($courseArray, $coursesEnrolled);  
 
@@ -172,12 +176,22 @@ function isAllowedUpload($mime) {
     } 
     return false;    
 }
-    // $msg = "<html><body><table style='background: red; height: 800px; width: 800px;'><tr><td>";
-    // $to = $emailAddress;
-    // $subject = $fName . " " . $lName . "'s Survey Results";
-    // $mailheaders = "From: High School Time Tracker Form";
-    // mail($to, $subject, $msg, $mailheaders);
-
+    //format and send both emails.
+    $msg = "First Name : " . $fName . ".</br>";
+    $msg .= "Last Name : " . $lName . ".</br>";
+    $msg .= "Email : " . $email . ".</br>";
+    $msg .= "D.O.B. : " . $dob . ".</br>";
+    $msg .= "Course 1 : " . $course1 . ".</br>";
+    $msg .= "Course 2 : " . $course2 . ".</br>";
+    $msg .= "Course 3 : " . $course3 . ".</br>";
+    $msg .= "Course 4 : " . $course4 . ".</br>";
+    $to = $email;
+    $mailheaders = "From: High School Course Registration";
+    //email to student
+    mail($to, $subject, $msg, $mailheaders);
+    //email to administrator
+    $to = $emailAddress;
+    mail($to, $subject, $msg, $mailheaders);
 ?>
 <!DOCTYPE html>
 <html lang="en">
