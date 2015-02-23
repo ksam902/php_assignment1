@@ -12,26 +12,41 @@ $course1 = "";
 $course2 = "";
 $course3 = "";
 $course4 = "";
+$image = "";
 $emailAddress = "w0265131@nscc.ca";
+$errorMessage = "";
+$fNameErr = $lNameErr = $emailErr = $dobErr = $course1Err = $course2Err = $course3Err = $course4Err = $imageErr="";
 
+//holds post values for courses
 $coursesEnrolled = [];
 $courseArray = [];
 $file = "";
 $shortName = "";
 
-if (!empty($_POST)) {
     //handling text inputs
-    if($_POST['fName'] !== " "){
+    if($_POST['fName'] !== ""){
         $fName = $_POST['fName'];
+    }else{
+        $fNameErr = "Please Enter Your First Name.";
     }
-    if($_POST['lName'] !== " "){
+    if($_POST['lName'] !== ""){
         $lName = $_POST['lName'];     
+    }else{
+        $lNameErr = "Please Enter Your Last Name.";
     }
-    if($_POST['email'] !== " "){
+    if($_POST['email'] !== ""){
         $email = $_POST['email'];     
+    }else{
+        $emailErr = "Please Enter Your Email.";
     }
-    if($_POST['dob'] !== " "){
-        $dob = $_POST['dob'];     
+    if($_POST['dob'] !== ""){
+        if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$_POST['dob'])){
+            $dob = $_POST['dob']; 
+        }else{
+            $dobErr = "Please use YYYY-MM-DD format.";
+        } 
+    }else{
+        $dobErr = "Please Enter Your Date of Birth.";
     }
     //handling form selects
     //course 1 selection
@@ -40,7 +55,7 @@ if (!empty($_POST)) {
        $course1 = $_POST['course1'];
        array_push($courseArray, $course1);
     }else{
-        $course1 = "No Course Selected";
+        $course1Err = "Please Choose a Course 1 Option.";
     }
     //course 2 selection
     if(isset($_POST['course2'])) 
@@ -48,7 +63,7 @@ if (!empty($_POST)) {
        $course2 = $_POST['course2'];
        array_push($courseArray, $course2);
     }else{
-        $course2 = "No Course Selected";
+        $course2Err = "Please Choose a Course 2 Option.";
     }    
     //course 3 selection
     if(isset($_POST['course3'])) 
@@ -56,7 +71,7 @@ if (!empty($_POST)) {
        $course3 = $_POST['course3'];
        array_push($courseArray, $course3);
     }else{
-        $course3 = "No Course Selected";
+        $course3Err = "Please Choose a Course 3 Option.";
     }
     //course 4 selection
     if(isset($_POST['course4'])) 
@@ -64,7 +79,7 @@ if (!empty($_POST)) {
        $course4 = $_POST['course4'];
        array_push($courseArray, $course4);
     }else{
-        $course4 = "No Course Selected";
+        $course4Err = "Please Choose a Course 4 Option.";
     }
     if (is_uploaded_file($_FILES['imageToUpload']['tmp_name'])) {
             $name = $_FILES['imageToUpload']['name'];
@@ -72,11 +87,19 @@ if (!empty($_POST)) {
             $mime = $_FILES['imageToUpload']['type'];
             if (isAllowedUpload($mime)) {                
                 move_uploaded_file($_FILES['imageToUpload']['tmp_name'], PATH_IMAGES. $_FILES['imageToUpload']['name']);               
+            }else{
+                $imageErr = "Please Upload a JPG or PNG Image.";
             }
+    }else{
+        $name = "default.jpg";
     }
-    writeToFiles($courseArray, $fName, $lName);
-    $coursesEnrolled = readCourses($courseArray, $coursesEnrolled);
-}
+    if ( $fNameErr !== "" || $lNameErr !== "" || $emailErr !== "" || $dobErr !== "" || $course1Err !== "" || $course2Err !== "" || $course3Err !== "" || $course4Err !== "" || $imageErr !== "") {
+        header('Location: form-assignment1.php?firstNameError='.$fNameErr.'&lastNameError='.$lNameErr.'&emailError='.$emailErr.'&dobError='.$dobErr.'&course1Error='.$course1Err.'&course2Error='.$course2Err.'&course3Error='.$course3Err.'&course4Error='.$course4Err.'&imageError='.$imageErr.'');
+        exit;
+    } 
+        writeToFiles($courseArray, $fName, $lName);
+        $coursesEnrolled = readCourses($courseArray, $coursesEnrolled);  
+
 function readCourses($courseArray, $courses){
     foreach ($courseArray as $value) {
         $filename = "courses/$value";
@@ -176,10 +199,16 @@ function isAllowedUpload($mime) {
     </div>    
     <div id="summary" class="container col-md-16">
         <div id="container">
-            <h4>Great! Thanks <strong><?php echo $fName; ?></strong> for responding to our survey!</h4>
-            <p><strong>Student's Name : </strong><?php echo $fName . " " . $lName ?></p>
-            <p><strong>Student's E-Mail Address : </strong><?php echo $email ?></p>
-            <br/>
+            <div id="imgStudent">
+                <?php
+                    echo '<img src="http://nscc-php.local/assignment1/images/' . $name . '">';
+                ?>
+            </div> 
+            <div>          
+                <!-- <h4>Great! Thanks <strong><?php echo $fName; ?></strong> for responding to our survey!</h4> -->
+                <p><strong>Student's Name : </strong><?php echo $fName . " " . $lName ?></p>
+                <p><strong>Student's E-Mail Address : </strong><?php echo $email ?></p>
+            </div>
             <h5>SUMMARY</h5>
             <div id="studentInfo">
                 <h5>STUDENT INFO</h5>         
@@ -195,23 +224,20 @@ function isAllowedUpload($mime) {
                 <p><strong>Course 3 :</strong> <?php echo $course3; ?>.</p>
                 <p><strong>Course 4 :</strong> <?php echo $course4; ?>.</p>
             </div>
-            <div id="imageUpload">
-                <strong>Image Uploaded : </strong>
-            </div>
             <div id="printButton">
                 <input id="btnPrint" type="submit" name="submit" class="btn btn-default" value="Print">
             </div>       
         </div>
     </div>
     <?php
-        foreach ($coursesEnrolled as $value) {
+        for($i = 0; $i<count($coursesEnrolled); $i++) {
             echo    "<div class='container col-md-16 course'>
                         <div id='container'>
                             <div class='btnCourse'>
-                                <input type='submit' name='btnCourse' class='btn btn-default toggle-course' value='Toggle Course'>
+                                <h3><input type='submit' name='btnCourse' class='btn btn-default toggle-course' id='btnCourse$i' value='$courseArray[$i]'></h3>
                             </div>
-                            <div class='course-content'> 
-                                $value
+                            <div class='course-content'>
+                                $coursesEnrolled[$i]
                             </div>
                         </div>
                     </div>";    
