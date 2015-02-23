@@ -1,189 +1,198 @@
 <?php
-
+// define constants
+define('PATH_IMAGES', 'images/');
+define('MIME_PNG', 'image/png');
+define('MIME_JPG', 'image/jpeg');
 //form variables
 $fName = "";
 $lName = "";
-$yob = 0;
-$grade = 0;
-$siblings = 0;
-$bed = 0;
-$wake_up = 0;
-$homework = 0;
-$tv = 0;
-$computer = 0;
-$family = 0;
-$friends = 0;
-$yearsLeft = 0;
+$email = "";
+$dob = "";
+$course1 = "";
+$course2 = "";
+$course3 = "";
+$course4 = "";
+$image = "";
 $emailAddress = "w0265131@nscc.ca";
+$fNameErr = $lNameErr = $emailErr = $dobErr = $course1Err = $course2Err = $course3Err = $course4Err = $imageErr="";
 
-//handling text inputs
-    if($_POST['fName'] !== " "){
+//holds post values for courses
+$coursesEnrolled = [];
+$courseArray = [];
+$file = "";
+$shortName = "";
+
+    //handling text inputs - if input is not empty, assign corresponding variable to it. If it is empty, provide error message
+    if($_POST['fName'] !== ""){
         $fName = $_POST['fName'];
+    }else{
+        $fNameErr = "Please Enter Your First Name.";
     }
-    if($_POST['lName'] !== " "){
+    if($_POST['lName'] !== ""){
         $lName = $_POST['lName'];     
-    }
-//handling form selects
-    //yob selection
-    if(isset($_POST['yob'])) 
-    {
-       $yob = $_POST['yob'];
     }else{
-        $yob = "No Year of Birth Selected";
+        $lNameErr = "Please Enter Your Last Name.";
     }
-    //current school year selection
-    if(isset($_POST['grade'])) 
-    {
-       $grade = $_POST['grade'];
+    if($_POST['email'] !== ""){
+        $email = $_POST['email'];     
     }else{
-        $grade = "No School Grade Selected";
+        $emailErr = "Please Enter Your Email.";
     }
-    //siblings selection
-    if(isset($_POST['siblings'])) 
-    {
-       $siblings = $_POST['siblings'];
+    if($_POST['dob'] !== ""){
+        //regular expression checking for date of birth YYYY-MM-DD format
+        if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$_POST['dob'])){
+            $dob = $_POST['dob']; 
+        }else{
+            $dobErr = "Please use YYYY-MM-DD format.";
+        } 
     }else{
-        $siblings = "No Number of Siblings Selected";
+        $dobErr = "Please Enter Your Date of Birth.";
     }
-    //bed selection
-    if($_POST['sleep'] !== " "){
-        $bed = $_POST['sleep'];
-    }
-    //wake_up selection
-    if($_POST['awake'] !== " "){
-        $wake_up = $_POST['awake'];     
-    }
-    //homework selection
-    if(isset($_POST['homework'])) 
+    //handling form selects - if selected push it to the course array
+    //course 1 selection
+    if(isset($_POST['course1'])) 
     {
-       $homework = $_POST['homework'];
+       $course1 = $_POST['course1'];
+       array_push($courseArray, $course1);
     }else{
-        $homework = "No Homework Hours Selected";
+        $course1Err = "Please Choose a Course 1 Option.";
     }
-    //TV selection
-    if(isset($_POST['tv'])) 
+    //course 2 selection
+    if(isset($_POST['course2'])) 
     {
-       $tv = $_POST['tv'];
+       $course2 = $_POST['course2'];
+       array_push($courseArray, $course2);
     }else{
-        $tv = "No TV Hours Selected";
-    }
-    //computer selection
-    if(isset($_POST['computer'])) 
+        $course2Err = "Please Choose a Course 2 Option.";
+    }    
+    //course 3 selection
+    if(isset($_POST['course3'])) 
     {
-       $computer = $_POST['computer'];
+       $course3 = $_POST['course3'];
+       array_push($courseArray, $course3);
     }else{
-        $computer = "No Computer Hours Selected";
+        $course3Err = "Please Choose a Course 3 Option.";
     }
-    //family selection
-    if(isset($_POST['family'])) 
+    //course 4 selection
+    if(isset($_POST['course4'])) 
     {
-       $family = $_POST['family'];
+       $course4 = $_POST['course4'];
+       array_push($courseArray, $course4);
     }else{
-        $family = "No Family Hours Selected";
+        $course4Err = "Please Choose a Course 4 Option.";
     }
-    //friends selection
-    if(isset($_POST['friends'])) 
-    {
-       $friends = $_POST['friends'];
+    //handle image upload
+    if (is_uploaded_file($_FILES['imageToUpload']['tmp_name'])) {
+            $name = $_FILES['imageToUpload']['name'];
+            // get mime type
+            $mime = $_FILES['imageToUpload']['type'];
+            //check if image file is of the right type
+            if (isAllowedUpload($mime)) {                
+                move_uploaded_file($_FILES['imageToUpload']['tmp_name'], PATH_IMAGES. $_FILES['imageToUpload']['name']);               
+            }else{
+                $imageErr = "Please Upload a JPG or PNG Image.";
+            }
     }else{
-        $friends = "No Friends Hours Selected";
+        $name = "default.jpg";
     }
-    //years left
-    switch ($grade) {
-        case 7:
-            $yearsLeft = 6;
-            break;
-        case 8:
-            $yearsLeft = 5;
-            break;
-        case 9:
-            $yearsLeft = 4;
-            break;
-        case 10:
-            $yearsLeft = 3;
-            break;
-        case 11:
-            $yearsLeft = 2;
-            break;
-        case 12:
-            $yearsLeft = 1;
-            break;
-        default:
-            echo "You forgot to enter what grade you are in!";
+    //check error variables, if one is not empty there is an error in the form and the user is redirected with the error message
+    if ( $fNameErr !== "" || $lNameErr !== "" || $emailErr !== "" || $dobErr !== "" || $course1Err !== "" || $course2Err !== "" || $course3Err !== "" || $course4Err !== "" || $imageErr !== "") {
+        header('Location: form-assignment1.php?firstNameError='.$fNameErr.'&lastNameError='.$lNameErr.'&emailError='.$emailErr.'&dobError='.$dobErr.'&course1Error='.$course1Err.'&course2Error='.$course2Err.'&course3Error='.$course3Err.'&course4Error='.$course4Err.'&imageError='.$imageErr.'');
+        exit;
     }
+    //if we make it this far, write to files 
+        writeToFiles($courseArray, $fName, $lName);
+        $coursesEnrolled = readCourses($courseArray, $coursesEnrolled);  
 
-    function getHomeworkHours($yearsLeft, $homework){
+function readCourses($courseArray, $courses){
+    foreach ($courseArray as $value) {
+        $filename = "courses/$value";
+        $whattoread = @fopen($filename, "r") or die("Couldn't open file");
+        $file_contents = fread($whattoread, filesize($filename));
+        $new_file_contents = nl2br($file_contents);
+        $msgOne = "$new_file_contents";
+        array_push($courses, $msgOne);  
+        fclose($whattoread);   
+    }  
+    return $courses;
+}
+function writeToFiles($courseArray, $fName, $lName){
+    $name = $fName." ".$lName[0].".";
+    $course = "";
 
-        return ($yearsLeft * 365) * $homework;
-    };
-    function getScreenHours($yearsLeft, $tv, $computer){
-
-        return ($yearsLeft * 365) * ($tv + $computer);
-    };
-    function getScreenPercentage($tv, $computer, $bed, $wake_up){
-        $scrPct = (24 - $bed) / ($tv + $computer);
-
-        return $scrPct . "%";
-    };
-
-
-    $msg = "<html><body><table style='background: red; height: 800px; width: 800px;'><tr><td>";
-    $msg .= "E-MAIL SENT FROM " . $emailAddress . "\n";
-    $msg .= "</td></tr><tr><td colspan='2'>";
-    $msg .= "Results:";
-    $msg .= "</td></tr><tr><td>";
-    $msg .= "Full Name:";
-    $msg .= "</td><td>";
-    $msg .= $fName . " " . $lName;
-    $msg .= "</td></tr><tr><td>";
-    $msg .= "Year of Birth";
-    $msg .= "</td><td>";
-    $msg .= $yob;
-    $msg .= "</td></tr><tr><td>";
-    $msg .= "Number of Siblings";
-    $msg .= "</td><td>";
-    $msg .= $siblings;
-    $msg .= "</td></tr>";
-    $msg .= "<tr><td>";
-    $msg .= "Current Grade";
-    $msg .= "</td><td>";
-    $msg .= $grade;
-    $msg .= "</td></tr>";
-    $msg .= "<tr><td>";
-    $msg .= "Years Left";
-    $msg .= "</td><td>";
-    $msg .= $yearsLeft;
-    $msg .= "</td></tr>";
-    $msg .= "<tr><td>";
-    $msg .= "Hours Spent Doing Homework";
-    $msg .= "</td><td>";
-    $msg .= getHomeworkHours($yearsLeft, $homework);
-    $msg .= "</td></tr>";
-    $msg .= "<tr><td>";
-    $msg .= "Hours Spent In Front Of Screen";
-    $msg .= "</td><td>";
-    $msg .= getScreenHours($yearsLeft, $tv, $computer);
-    $msg .= "</td></tr>";
-    $msg .= "<tr><td>";
-    $msg .= "% of Awake Time Spent in Front of a Screen";
-    $msg .= "</td><td>";
-    $msg .= getScreenPercentage($tv, $computer, $bed, $wake_up);
-    $msg .= "</td></tr>";
-    $msg .= "</table></body></html>";
-    $to = $emailAddress;
-    $subject = $fName . " " . $lName . "'s Survey Results";
-    $mailheaders = "From: High School Time Tracker Form";
+    foreach ($courseArray as $value) {
+        switch ($value) {
+            case "Accounting 11":
+                $course = $value;
+                //echo $course . " ". $name;
+                break;
+            case "Biology 11":
+                $course = $value;
+                //echo $course . " ". $name;
+                break;
+            case "Communications 12":
+                $course = $value;
+                //echo $course . " ". $name;
+                break;
+            case "Digital Arts 11":
+                $course = $value;
+                //echo $course . " ". $name;
+                break;
+            case "English 12":
+                $course = $value;
+                //echo $course . " ". $name;
+                break;
+            case "French 11":
+                $course = $value;
+                //echo $course . " ". $name;
+                break;
+            case "History 12":
+                $course = $value;
+                //echo $course . " ". $name;
+                break;
+            case "Law 12":
+                $course = $value;
+                //echo $course . " ". $name;
+                break;
+            case "Physical Education 10":
+                $course = $value;
+                //echo $course . " ". $name;
+                break;
+            case "Robotics 11":
+                $course = $value;
+                //echo $course . " ". $name;
+                break;                                               
+            default:
+                echo "You did not choose a course!";
+        }
+            $file = fopen("courses/$course", "a") or die("Unable to open file!");
+            fwrite($file, "\n".$name);
+            fclose($file);
+    }
+}
+function isAllowedUpload($mime) {   
+    if (($mime == MIME_PNG) || ($mime == MIME_JPG)) {
+        return true;
+    } 
+    return false;    
+}
+    //format and send both emails.
+    $msg = "First Name : " . $fName . ".</br>";
+    $msg .= "Last Name : " . $lName . ".</br>";
+    $msg .= "Email : " . $email . ".</br>";
+    $msg .= "D.O.B. : " . $dob . ".</br>";
+    $msg .= "Course 1 : " . $course1 . ".</br>";
+    $msg .= "Course 2 : " . $course2 . ".</br>";
+    $msg .= "Course 3 : " . $course3 . ".</br>";
+    $msg .= "Course 4 : " . $course4 . ".</br>";
+    $to = $email;
+    $mailheaders = "From: High School Course Registration";
+    //email to student
     mail($to, $subject, $msg, $mailheaders);
-
+    //email to administrator
+    $to = $emailAddress;
+    mail($to, $subject, $msg, $mailheaders);
 ?>
-<!--
-A message saying "Great! Thanks [firstname] for responding to our survey".
-A display of the students details formatted suitably (just name, birth-year, current school year and number of siblings) and make use of external CSS.
-Use the students' current year at school to work out how many years they have left at school, and from this, how many hours they will spend doing homework or watching a screen until they finish school.
-Work out the percentage of awake time spent in front of a screen.
-An email should be sent to a set email address with a subject of, for example, "David Terry's Survey results." and a message that includes the data entered and your calculations.
-The email should be formatted suitably using HTML and CSS and the data should be formated in a table.
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -194,39 +203,59 @@ The email should be formatted suitably using HTML and CSS and the data should be
     <link rel="stylesheet" href="stylesheet.css" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/Javascript" src="form.js"></script>    
 </head>
 <body>
-
-<div id="output" class="container col-md-16">
-    <div>
-
+    <div class="jumbotron">
+      <div class="container text-center">
+        <h2>Confirmation <small>:  A Summary of Your Student Course Tracker</small></h2>
+      </div>
+    </div>    
+    <div id="summary" class="container col-md-16">
+        <div id="container">
+            <div id="imgStudent">
+                <?php
+                    echo '<img src="http://nscc-php.local/assignment1/images/' . $name . '">';
+                ?>
+            </div> 
+            <div>          
+                <!-- <h4>Great! Thanks <strong><?php echo $fName; ?></strong> for responding to our survey!</h4> -->
+                <p><strong>Student's Name : </strong><?php echo $fName . " " . $lName ?></p>
+                <p><strong>Student's E-Mail Address : </strong><?php echo $email ?></p>
+            </div>
+            <h5>SUMMARY</h5>
+            <div id="studentInfo">
+                <h5>STUDENT INFO</h5>         
+                <p><strong>First Name :</strong> <?php echo $fName; ?>.</p>
+                <p><strong>Last Name :</strong> <?php echo $lName; ?>.</p>
+                <p><strong>Email :</strong> <?php echo $email; ?>.</p>
+                <p><strong>D.O.B. :</strong> <?php echo $dob; ?>.</p>
+            </div>
+            <div id="courseSelection">
+                <h5>COURSE SELECTION</h5>
+                <p><strong>Course 1 :</strong> <?php echo $course1; ?>.</p>
+                <p><strong>Course 2 :</strong> <?php echo $course2; ?>.</p>
+                <p><strong>Course 3 :</strong> <?php echo $course3; ?>.</p>
+                <p><strong>Course 4 :</strong> <?php echo $course4; ?>.</p>
+            </div>
+            <div id="printButton">
+                <input id="btnPrint" type="submit" name="submit" class="btn btn-default" value="Print">
+            </div>       
+        </div>
     </div>
-  <h2>A Summary of your High School Time Tracker Submission</h2>
-    <div>
-        Great! Thanks <?php echo "<strong>".$fName."</strong>"; ?> for responding to our survey!
-        <br/><br/>
-        <h4>E-mail sent:</h4>
-        <p><strong>Your Name : </strong><?php echo $fName . " " . $lName ?></p>
-        <p><strong>Your E-Mail Address : </strong><?php echo $emailAddress ?></p>
-        <br/>
-        <strong>SUMMARY</strong>
-        <br/><br/>
-        <strong>Full Name :</strong> <?php echo $fName . " " . $lName; ?>.
-        <br/>
-        <strong>Year of Birth :</strong> <?php echo $yob; ?>.
-        <br/>
-        <strong>Current School Grade :</strong> <?php echo $grade; ?>.
-        <br/>
-        <strong>Number of Siblings :</strong> <?php echo $siblings; ?> Siblings.
-        <br/>
-        <strong>Number of School Years Left :</strong> <?php echo $yearsLeft; ?> Years Left.
-        <br/>
-        <strong>Number of Hours Spent Doing Homework :</strong> <?php echo getHomeworkHours($yearsLeft, $homework); ?> Hours.
-        <br/>
-        <strong>Number of Hours Watching a Screen :</strong> <?php echo getScreenHours($yearsLeft, $tv, $computer); ?> Hours.
-        <br/>
-        <strong>Percentage of Awake Time Spent in Front of a Screen :</strong> <?php echo getScreenPercentage($tv, $computer, $bed, $wake_up); ?>.
-    </div>
-</div>
+    <?php
+        for($i = 0; $i<count($coursesEnrolled); $i++) {
+            echo    "<div class='container col-md-16 course'>
+                        <div id='container'>
+                            <div class='btnCourse'>
+                                <h3><input type='submit' name='btnCourse' class='btn btn-default toggle-course' id='btnCourse$i' value='$courseArray[$i]'></h3>
+                            </div>
+                            <div class='course-content'>
+                                $coursesEnrolled[$i]
+                            </div>
+                        </div>
+                    </div>";    
+        }
+    ?>
 </body>
 </html>
